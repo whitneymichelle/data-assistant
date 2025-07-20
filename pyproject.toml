@@ -1,0 +1,22 @@
+[project]
+name = "insights-ai"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "Your Name",email = "you@example.com"}
+]
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "openai (>=1.97.0,<2.0.0)",
+    "duckdb (>=1.3.2,<2.0.0)",
+    "plotly (>=6.2.0,<7.0.0)",
+    "streamlit (>=1.47.0,<2.0.0)",
+    "pandas (>=2.3.1,<3.0.0)",
+    "dotenv (>=0.9.9,<0.10.0)"
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
