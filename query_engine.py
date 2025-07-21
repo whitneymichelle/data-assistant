@@ -26,11 +26,13 @@ Generate a DuckDB SQL query to answer: '{question}'
 Here is the table schema: {df.dtypes.to_dict()}
 The table name is 'df'.
 Only return the SQL, no explanation.
+In your SQL outputs, structure the results for readability: first the category or label (e.g., year, region, product), then the numerical values (e.g., avg_price, count)
 """
     response = client.chat.completions.create(
         model="gpt-3.5-turbo",
         messages=[
             {"role": "system", "content": "You are a helpful assistant that writes valid DuckDB SQL queries."},
+            {"role": "system", "content": "You write clean DuckDB SQL. You prefer grouping/category columns first and numeric aggregates second."},
             {"role": "user", "content": prompt}
         ]
     )
