@@ -1,5 +1,4 @@
 import duckdb
-import pandas as pd
 from openai import OpenAI
 import os
 from dotenv import load_dotenv
@@ -20,11 +19,23 @@ def extract_sql(text):
     return text.strip()
 
 def ask_question(question, df):
+    # Get schema info
+    schema = df.dtypes.to_dict()
+
+    # Only sample unique values from columns with few distinct values
+    value_samples = {
+        col: df[col].dropna().unique()[:5].tolist()
+        for col in df.columns
+        if df[col].nunique() <= 15  # Adjust threshold as needed
+    }
+
     # Use GPT to generate SQL
     prompt = f"""
 Generate a DuckDB SQL query to answer: '{question}'
-Here is the table schema: {df.dtypes.to_dict()}
+Here is the table schema: {schema}
 The table name is 'df'.
+Here are sample values from some columns (to avoid incorrect assumptions):{value_samples}
+Only use column values that exist in the samples provided.
 Only return the SQL, no explanation.
 In your SQL outputs, structure the results for readability: first the category or label (e.g., year, region, product), then the numerical values (e.g., avg_price, count)
 """
