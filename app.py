@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-from query_engine import ask_question, define_intent
+from query_engine import ask_question, define_intent, find_insights, suggest_models
 from chart_utils import show_chart
 from preprocess_utils import coerce_dates
 
@@ -15,6 +15,14 @@ if uploaded_file:
     df = pd.read_csv(uploaded_file)
     df = coerce_dates(df)
     st.write("Preview:", df.head())
+    st.write("I'm generating insights for your data...")
+    insights = find_insights(df)
+    st.markdown("Key Data Insights:")
+    st.markdown(insights)
+    st.write("I'm generating model suggestions for your data...")
+    model_suggestions = suggest_models(df)
+    st.markdown("Model Suggestions:")
+    st.markdown(model_suggestions)
 
     for msg in st.session_state.messages:
         with st.chat_message(msg["role"]):

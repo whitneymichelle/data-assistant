@@ -102,3 +102,84 @@ def ask_question(question, df):
         # Run the SQL safely
         result = con.execute(sql).df()
         return sql, result
+
+def find_insights(df):
+    # Get schema info
+    schema = df.dtypes.to_dict()
+
+    # Only sample unique values from columns with few distinct values
+    value_samples = {
+        col: df[col].dropna().unique()[:5].tolist()
+        for col in df.columns
+        if df[col].nunique() <= 15  # Adjust threshold as needed
+    }
+
+    prompt = f"""
+    Here is the table schema: {schema}
+    Here are sample values from some columns (to avoid incorrect assumptions):{value_samples}
+    The table name is 'df'.
+    Generate three insights in bulleted format, focusing insights on trends, anomalies, or patterns that could inform business decisions.
+    The insights can be any combination of trends, anomalies, or patterns.
+    The bullet points headings should be descriptive, taking into acount the business context.
+    Focus on readability and clarity and give an explanation of why it might be important.
+    The format should be:
+        - Insight 1
+        - Insight 2
+        - Insight 3
+    """
+
+    system_prompt = f"""
+    "You are a data analyst that generates meaningful insights for business decisions.
+    """
+
+    response = client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        messages=[
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": prompt}
+            ]
+        )
+
+    raw_response = response.choices[0].message.content
+
+    return raw_response
+
+def suggest_models(df):
+    # Get schema info
+    schema = df.dtypes.to_dict()
+
+    # Only sample unique values from columns with few distinct values
+    value_samples = {
+        col: df[col].dropna().unique()[:5].tolist()
+        for col in df.columns
+        if df[col].nunique() <= 15  # Adjust threshold as needed
+    }
+
+    prompt = f"""
+    Here is the table schema: {schema}
+    Here are sample values from some columns (to avoid incorrect assumptions):{value_samples}
+    The table name is 'df'.
+    State potential fact tables from the data with the unique identifiers. If unique key would be a surrogate key, state which column(s) would be used to generate it.
+    State potential dimension tables from the data. Do not provide information about unique identifiers.
+    Showing fact tables and/or dimension tables are optional.
+    Fact tables should be listed under one heading and dimension tables under another. Source table does not need to be mentioned becasue there is only one table.
+    """
+
+    system_prompt = f"""
+    "Give suggestions on data modeling in the dimensional modeling framework."
+    """
+
+    response = client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        messages=[
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": prompt}
+            ]
+        )
+
+    raw_response = response.choices[0].message.content
+
+    return raw_response
+
+
+
