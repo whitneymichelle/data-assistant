@@ -159,14 +159,17 @@ def suggest_models(df):
     Here is the table schema: {schema}
     Here are sample values from some columns (to avoid incorrect assumptions):{value_samples}
     The table name is 'df'.
-    State potential fact tables from the data with the unique identifiers. If unique key would be a surrogate key, state which column(s) would be used to generate it.
-    State potential dimension tables from the data. Do not provide information about unique identifiers.
-    Showing fact tables and/or dimension tables are optional.
-    Fact tables should be listed under one heading and dimension tables under another. Source table does not need to be mentioned becasue there is only one table.
+    A surrogate key is a synthetic, unique identifier for a row — usually an auto-incrementing integer — that isn't derived from the business data itself.
+    If a fact table makes sense, create a DuckDB SQL query to create it. Indicate the unique key or the surrogate key as the unique key. The unique key should be a single column and the first column.
+    Give an explanation of the fact table
+    If a dimension table makes sense, create a DuckDB SQL query to create it. Indicate the unique key. The unique key should be a single column and the first column.
+    If a dimension table does not make sense to be a table, explain why.
+    Write the fact table and dimensional table in DuckDB SQL, no DDL. For example 'select col_1, cols_2 from df'
     """
 
     system_prompt = f"""
-    "Give suggestions on data modeling in the dimensional modeling framework."
+    "You are an analytics engineer. Give suggestions on data models in the dimensional modeling framework."
+    "When modeling data, identify surrogate keys by checking for numeric, high-cardinality, auto-increment-style columns that are not natural identifiers."
     """
 
     response = client.chat.completions.create(
