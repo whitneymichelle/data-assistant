@@ -19,10 +19,6 @@ if uploaded_file:
     insights = find_insights(df)
     st.markdown("Key Data Insights:")
     st.markdown(insights)
-    st.write("I'm generating model suggestions for your data...")
-    model_suggestions = suggest_models(df)
-    st.markdown("Model Suggestions:")
-    st.markdown(model_suggestions)
 
     for msg in st.session_state.messages:
         with st.chat_message(msg["role"]):
