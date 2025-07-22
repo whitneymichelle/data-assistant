@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-from query_engine import ask_question
+from query_engine import ask_question, define_intent
 from chart_utils import show_chart
 from preprocess_utils import coerce_dates
 
@@ -27,23 +27,38 @@ if uploaded_file:
             st.markdown(question)
 
         try:
-            sql, result = ask_question(question, df)
-            chart = show_chart(result)
-            response_content = (
-                "Here's the SQL I used:\n"
-                "```sql\n"
-                f"{sql}\n"
-                "```\n"
-                "And the result:"
-            )
+            if define_intent(question) == "sql_query":
+                sql, result = ask_question(question, df)
+                chart = show_chart(result)
+                response_content = (
+                    "Here's the SQL I used:\n"
+                    "```sql\n"
+                    f"{sql}\n"
+                    "```\n"
+                    "And the result:"
+                )
 
-            st.session_state.messages.append({"role": "assistant", "content": response_content})
+                st.session_state.messages.append({"role": "assistant", "content": response_content})
 
-            with st.chat_message("assistant"):
-                st.markdown(response_content)
-                st.dataframe(result)
-                if chart:
-                    st.plotly_chart(chart)
+                with st.chat_message("assistant"):
+                    st.markdown(response_content)
+                    st.dataframe(result)
+                    if chart:
+                        st.plotly_chart(chart)
+
+            else:
+                yml = ask_question(question, df)[0]
+                response_content = (
+                    "Here's the YAML of dbt tests I created:\n"
+                    "```yaml\n"
+                    f"{yml}\n"
+                    "```\n"
+                )
+
+                st.session_state.messages.append({"role": "assistant", "content": response_content})
+
+                with st.chat_message("assistant"):
+                    st.markdown(response_content)
 
         except Exception as e:
             error_msg = f"Error: {str(e)}"
