@@ -4,9 +4,9 @@ from query_engine import ask_question, define_intent, find_insights, mentions_ag
 from chart_utils import show_chart
 from preprocess_utils import coerce_dates
 
-st.title("Chat with Your CSV")
+st.title("Chat with Your Data Assistant")
 
-uploaded_file = st.file_uploader("Upload CSV", type=["csv"])
+uploaded_file = st.file_uploader("Upload a CSV", type=["csv"])
 
 if "messages" not in st.session_state:
     st.session_state.messages = []
@@ -14,17 +14,16 @@ if "messages" not in st.session_state:
 if uploaded_file:
     df = pd.read_csv(uploaded_file)
     df = coerce_dates(df)
-    st.write("Preview:", df.head())
-    st.write("I'm generating insights for your data...")
+    st.write("Preview your data:", df.head())
+    st.markdown("I'm generating some initial insights for your data...")
     insights = find_insights(df)
-    st.markdown("Key Data Insights:")
     st.markdown(insights)
 
     for msg in st.session_state.messages:
         with st.chat_message(msg["role"]):
             st.markdown(msg["content"])
 
-    question = st.chat_input("Ask a question about your data...")
+    question = st.chat_input("Ask a question about your data...(Try something like 'What is the average sales by category?' or 'What are some dbt tests I can run on this data?')")
     if question:
         st.session_state.messages.append({"role": "user", "content": question})
         with st.chat_message("user"):
