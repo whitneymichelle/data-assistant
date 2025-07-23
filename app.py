@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-from query_engine import ask_question, define_intent, find_insights, suggest_models
+from query_engine import ask_question, define_intent, find_insights, mentions_aggregation, requested_column_is_numeric
 from chart_utils import show_chart
 from preprocess_utils import coerce_dates
 
@@ -32,6 +32,10 @@ if uploaded_file:
 
         try:
             if define_intent(question) == "sql_query":
+
+                if mentions_aggregation(question) and requested_column_is_numeric(question, df):
+                    st.warning("You may be trying to aggregate a non-numeric column.")
+
                 sql, result = ask_question(question, df)
                 chart = show_chart(result)
                 response_content = (

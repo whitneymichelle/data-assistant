@@ -3,6 +3,8 @@ from openai import OpenAI
 import os
 from dotenv import load_dotenv
 import re
+from examples_for_ai import AGG_KEYWORDS
+import pandas as pd
 
 load_dotenv()
 
@@ -37,6 +39,16 @@ def extract_yaml(raw_response: str) -> str:
     # Fallback: just return the whole response if no code block found
     return raw_response.strip()
 
+def mentions_aggregation(question):
+    question = question.lower()
+    return any(keyword in question for keyword in AGG_KEYWORDS)
+
+def requested_column_is_numeric(question, df):
+    for col in df.columns:
+        if col.lower() in question.lower():
+            return pd.api.types.is_numeric_dtype(df[col])
+    return True #default to True
+
 def ask_question(question, df):
     # Get schema info
     schema = df.dtypes.to_dict()
@@ -66,6 +78,7 @@ def ask_question(question, df):
         Only use column values that exist in the samples provided.
         Only return the SQL, no explanation.
         In your SQL outputs, structure the results for readability: first the category or label (e.g., year, region, product), then the numerical values (e.g., avg_price, count)
+        "Only apply numeric aggregations (e.g., AVG, SUM) to columns with numeric data types (int64, float64)."
         """
 
     if intent == "dbt_test":
@@ -85,7 +98,9 @@ def ask_question(question, df):
         messages=[
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": prompt}
-            ]
+            ],
+        temperature=0
+
         )
 
     raw_response = response.choices[0].message.content
