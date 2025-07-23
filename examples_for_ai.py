@@ -55,3 +55,11 @@ models:
               values: ['pending', 'shipped', 'delivered', 'cancelled']
 
 """
+
+INSIGHTS_STRUCTURE = """
+
+- **Short insight description**: details of the insight
+- **Short insight description**: details of the insight
+- **Short insight description**: details of the insight
+
+"""

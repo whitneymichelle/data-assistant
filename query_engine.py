@@ -3,7 +3,7 @@ from openai import OpenAI
 import os
 from dotenv import load_dotenv
 import re
-from examples_for_ai import AGG_KEYWORDS, YAML_SAMPLE
+from examples_for_ai import AGG_KEYWORDS, YAML_SAMPLE, INSIGHTS_STRUCTURE
 import pandas as pd
 
 load_dotenv()
@@ -152,10 +152,8 @@ def find_insights(df):
     The insights can be any combination of trends, anomalies, or patterns.
     The bullet points headings should be descriptive, taking into acount the business context.
     Focus on readability and clarity and give an explanation of why it might be important.
-    The format should be:
-        - Insight 1
-        - Insight 2
-        - Insight 3
+    Here is an example of the structure of the insights and should follow this structure: {INSIGHTS_STRUCTURE}
+    There should only be one bullet point per insights. The short summary of the insight should be bolded, then a colon, and then a deeper description.
     """
 
     system_prompt = f"""
