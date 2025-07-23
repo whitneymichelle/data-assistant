@@ -3,7 +3,7 @@ from openai import OpenAI
 import os
 from dotenv import load_dotenv
 import re
-from examples_for_ai import AGG_KEYWORDS
+from examples_for_ai import AGG_KEYWORDS, YAML_SAMPLE
 import pandas as pd
 
 load_dotenv()
@@ -68,7 +68,22 @@ def ask_question(question, df):
         Generate a dbt tests to answer: '{question}'
         Here is the table schema: {schema}
         The table name is 'df'.
+        Here is an example of a dbt schema YAML file and you should follow this structure: {YAML_SAMPLE}
+
+        Your task is to generate valid dbt schema YAML (version 2) for a given DataFrame.
+        Always follow this structure exactly:
+
+        - Use `version: 2` at the top.
+        - Use `models` → `name`, `description`, and `columns`.
+        - Each column should include a `description` and `tests` block.
+        - Tests should include common ones like `not_null`, `unique`, or `accepted_values`.
+        - For numeric columns, include `dbt_expectations.expect_column_values_to_be_between` if applicable.
+        - For foreign keys, use the `relationships` test.
+        - Add **YAML comments above each test** explaining what the test is doing and why it's useful.
+
+        Only return the YAML inside a Markdown code block (```yaml). Do not explain anything outside of the YAML.
         """
+
     else:
         prompt = f"""
         Generate a DuckDB SQL query to answer: '{question}'

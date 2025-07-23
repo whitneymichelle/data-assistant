@@ -33,7 +33,7 @@ if uploaded_file:
         try:
             if define_intent(question) == "sql_query":
 
-                if mentions_aggregation(question) and requested_column_is_numeric(question, df):
+                if mentions_aggregation(question) and not requested_column_is_numeric(question, df):
                     st.warning("Warning: You may be trying to aggregate a non-numeric column.")
 
                 sql, result = ask_question(question, df)
@@ -53,7 +53,6 @@ if uploaded_file:
                     st.dataframe(result)
                     if chart:
                         st.plotly_chart(chart)
-                                        st.session_state.charts.append(chart)
 
             else:
                 yml = ask_question(question, df)[0]
