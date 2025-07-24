@@ -43,5 +43,5 @@
 - Does not support multi-file joins
 - Visualizations are auto-chosen based on result shape
 
-## License
+### License
 This project is licensed under the MIT License.
