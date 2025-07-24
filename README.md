@@ -4,6 +4,9 @@
 ### Overview ###
 **Chat with Your Data Assistant** is a Streamlit app that lets you explore and ask questions in natural language. Whether a data expert or business stakeholder, you can upload a CSV and automatically generate SQL, visualizations, and dbt tests - no coding required.
 
+### Demo ###
+[![Watch the demo](https://www.loom.com/share/0ef838c9c9b94e869239e9d28abefc4c?sid=34bb923a-8891-470f-95c8-4ffa09d043fd)
+
 ### Features ###
 - Upload a CSV and preview the data
 - Get automatic data insights - trends within a business context
